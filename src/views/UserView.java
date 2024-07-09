@@ -1,6 +1,5 @@
 package views;
 
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -8,19 +7,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
-import controllers.UserController;
+import controllers.AdminController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import models.User;
+import models.Admin;
 
 public class UserView extends JFrame {
 
-    private UserController userController;
+    private AdminController userController;
     private JTable table;
     private DefaultTableModel model;
 
     public UserView() throws SQLException {
-        userController = new UserController();
+        userController = new AdminController();
 
         setTitle("User Management");
         setSize(600, 400);
@@ -85,9 +84,9 @@ public class UserView extends JFrame {
 
     // Method untuk menampilkan data pengguna dalam tabel
     private void refreshTable() throws SQLException {
-        List<User> users = userController.getAllUsers();
+        List<Admin> users = userController.getAllUsers();
         model.setRowCount(0); // Clear table
-        for (User user : users) {
+        for (Admin user : users) {
             model.addRow(new Object[]{user.getId(), user.getName(), user.getEmail()});
         }
     }
@@ -95,9 +94,11 @@ public class UserView extends JFrame {
     // Method untuk menambahkan pengguna baru
     private void tambahUser() throws SQLException {
         String nama = JOptionPane.showInputDialog(this, "Masukkan nama pengguna:");
-        String email = JOptionPane.showInputDialog(this, "Masukkan email pengguna:");
+        String email = JOptionPane.showInputDialog(this, "Masukkan email pengguna:");        
+        String password = JOptionPane.showInputDialog(this, "Masukkan password pengguna:");
+
         if (nama != null && email != null && !nama.isEmpty() && !email.isEmpty()) {
-            userController.createUser(nama, email);
+            userController.createUser(nama, email, password);
             refreshTable();
         } else {
             JOptionPane.showMessageDialog(this, "Masukan Semua data yang benar", "Peringatan", JOptionPane.WARNING_MESSAGE);
@@ -110,9 +111,11 @@ public class UserView extends JFrame {
         if (selectedRow != -1) {
             int userId = (int) model.getValueAt(selectedRow, 0);
             String newName = JOptionPane.showInputDialog(this, "Masukkan nama baru:");
-            String newEmail = JOptionPane.showInputDialog(this, "Masukkan email baru:");
+            String newEmail = JOptionPane.showInputDialog(this, "Masukkan email baru:");            
+            String newPassword = JOptionPane.showInputDialog(this, "Masukkan password baru:");
+
             if (newName != null && newEmail != null && !newName.isEmpty() && !newEmail.isEmpty()) {
-                userController.updateUser(userId, newName, newEmail);
+                userController.updateUser(userId, newName, newEmail, newPassword);
                 refreshTable();
             } else {
                 JOptionPane.showMessageDialog(this, "Masukan Semua data yang benar", "Peringatan", JOptionPane.WARNING_MESSAGE);

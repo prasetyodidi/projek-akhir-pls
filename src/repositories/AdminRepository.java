@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package repositories;
-import models.User;
+import models.Admin;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,9 @@ import database.Database;
  *
  * @author adria
  */
-public class UserRepository {
+public class AdminRepository {
 
-    public void createUser(User user) throws SQLException {
+    public void createUser(Admin user) throws SQLException {
         String query = "INSERT INTO users (name, email) VALUES (?, ?)";
         try (PreparedStatement statement = Database.getConnection().prepareStatement(query)) {
             statement.setString(1, user.getName());
@@ -23,31 +23,31 @@ public class UserRepository {
         }
     }
 
-    public User getUserById(int id) throws SQLException {
+    public Admin getUserById(int id) throws SQLException {
         String query = "SELECT * FROM users WHERE id = ?";
         try (PreparedStatement statement = Database.getConnection().prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new User(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("email"));
+                return new Admin(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("email"), resultSet.getString("password"));
             }
         }
         return null;
     }
 
-    public List<User> getAllUsers() throws SQLException {
-        List<User> users = new ArrayList<>();
+    public List<Admin> getAllUsers() throws SQLException {
+        List<Admin> users = new ArrayList<>();
         String query = "SELECT * FROM users";
         try (Statement statement = Database.getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
-                users.add(new User(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("email")));
+                users.add(new Admin(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("email"), resultSet.getString("password")));
             }
         }
         return users;
     }
 
-    public void updateUser(User user) throws SQLException {
+    public void updateUser(Admin user) throws SQLException {
         String query = "UPDATE users SET name = ?, email = ? WHERE id = ?";
         try (PreparedStatement statement = Database.getConnection().prepareStatement(query)) {
             statement.setString(1, user.getName());

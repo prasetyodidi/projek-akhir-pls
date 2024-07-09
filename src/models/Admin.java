@@ -8,19 +8,23 @@ package models;
  *
  * @author adria
  */
-public class User {
+public class Admin {
     private int id;
     private String name;
-    private String email;
+    private String email;    
+    private String password;
 
-    // Constructors
-    public User() {}
-
-    public User(int id, String name, String email) {
+    public Admin(int id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.password = password;
     }
+    
+    
+
+    // Constructors
+    public Admin() {}
 
     // Getters and Setters
     public int getId() {
