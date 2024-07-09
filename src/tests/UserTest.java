@@ -1,22 +1,22 @@
 package tests;
 
-import controllers.UserController;
+import controllers.AdminController;
 import java.sql.SQLException;
 
 public class UserTest {
     public static void main(String[] args) throws SQLException {
-        UserController userController = new UserController();
+        AdminController userController = new AdminController();
 
         // Create users
-        System.out.println(userController.createUser("John Doe", "john@example.com"));
-        System.out.println(userController.createUser("Jane Smith", "jane@example.com"));
+        System.out.println(userController.createUser("John Doe", "john@example.com", "Admin#123"));
+        System.out.println(userController.createUser("Jane Smith", "jane@example.com", "Admin#123"));
 
         // Retrieve and display users
         System.out.println("Daftar Pengguna:");
         userController.getAllUsers();
 
         // Update a user
-        System.out.println(userController.updateUser(1, "John Updated", "johnupdated@example.com"));
+        System.out.println(userController.updateUser(1, "John Updated", "johnupdated@example.com", "Admin#123"));
 
         // Retrieve and display updated user
         System.out.println("Pengguna dengan ID 1 setelah diupdate:");
