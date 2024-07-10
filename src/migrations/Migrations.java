@@ -27,25 +27,67 @@ public class Migrations {
             + "type VARCHAR(100) NOT NULL, "
             + "date VARCHAR(20) NOT NULL)";
 
+    String adminMigrateQuery = "CREATE TABLE IF NOT EXISTS admin ("
+            + "id INT AUTO_INCREMENT PRIMARY KEY, "
+            + "nama VARCHAR(100) NOT NULL, "
+            + "email VARCHAR(100) NOT NULL UNIQUE, "
+            + "password VARCHAR(255) NOT NULL)";
+
+    String anggotaMigrateQuery = "CREATE TABLE IF NOT EXISTS anggota ("
+            + "id INT AUTO_INCREMENT PRIMARY KEY, "
+            + "nama VARCHAR(100) NOT NULL, "
+            + "alamat VARCHAR(255), "
+            + "telepon VARCHAR(20), "
+            + "email VARCHAR(100) NOT NULL UNIQUE, "
+            + "password VARCHAR(255) NOT NULL, "
+            + "tanggal_bergabung DATE NOT NULL)";
+
+    String simpananMigrateQuery = "CREATE TABLE IF NOT EXISTS simpanan ("
+            + "id INT AUTO_INCREMENT PRIMARY KEY, "
+            + "id_anggota INT, "
+            + "jumlah DECIMAL(15, 2) NOT NULL, "
+            + "tanggal_simpan DATE NOT NULL, "
+            + "FOREIGN KEY (id_anggota) REFERENCES anggota(id))";
+
+    String pinjamanMigrateQuery = "CREATE TABLE IF NOT EXISTS pinjaman ("
+            + "id INT AUTO_INCREMENT PRIMARY KEY, "
+            + "id_anggota INT, "
+            + "jumlah DECIMAL(15, 2) NOT NULL, "
+            + "tanggal_pinjam DATE NOT NULL, "
+            + "tanggal_jatuh_tempo DATE NOT NULL, "
+            + "status ENUM('belum_lunas', 'lunas') DEFAULT 'belum_lunas', "
+            + "FOREIGN KEY (id_anggota) REFERENCES anggota(id))";
+
     public void userMigration(Connection connection) throws SQLException {
-        PreparedStatement statement = null;
-        try {
-            statement = connection.prepareStatement(userMigrateQuery);
-            int result = statement.executeUpdate();
-            System.err.println("User table migration executed with result: " + result);
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
+        executeMigration(connection, userMigrateQuery, "User");
     }
 
     public void logComeMigration(Connection connection) throws SQLException {
+        executeMigration(connection, logComeMigrateQuery, "Logcomes");
+    }
+
+    public void adminMigration(Connection connection) throws SQLException {
+        executeMigration(connection, adminMigrateQuery, "Admin");
+    }
+
+    public void anggotaMigration(Connection connection) throws SQLException {
+        executeMigration(connection, anggotaMigrateQuery, "Anggota");
+    }
+
+    public void simpananMigration(Connection connection) throws SQLException {
+        executeMigration(connection, simpananMigrateQuery, "Simpanan");
+    }
+
+    public void pinjamanMigration(Connection connection) throws SQLException {
+        executeMigration(connection, pinjamanMigrateQuery, "Pinjaman");
+    }
+
+    private void executeMigration(Connection connection, String query, String tableName) throws SQLException {
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement(logComeMigrateQuery);
+            statement = connection.prepareStatement(query);
             int result = statement.executeUpdate();
-            System.err.println("Logcomes table migration executed with result: " + result);
+            System.err.println(tableName + " table migration executed with result: " + result);
         } finally {
             if (statement != null) {
                 statement.close();
@@ -59,6 +101,10 @@ public class Migrations {
             connection.setAutoCommit(false);
             userMigration(connection);
             logComeMigration(connection);
+            adminMigration(connection);
+            anggotaMigration(connection);
+            simpananMigration(connection);
+            pinjamanMigration(connection);
             connection.commit();
         } catch (SQLException exception) {
             connection.rollback();
