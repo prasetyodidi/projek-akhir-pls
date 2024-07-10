@@ -9,19 +9,21 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import controllers.AdminController;
-import models.Admin;
+import controllers.AnggotaController;
+import models.Anggota;
+import java.sql.Date;
+import java.time.LocalDate;
 
-public class UserView extends JFrame {
+public class AnggotaView extends JFrame {
 
-    private AdminController userController;
+    private AnggotaController anggotaController;
     private JTable table;
     private DefaultTableModel model;
 
-    public UserView() throws SQLException {
-        userController = new AdminController();
+    public AnggotaView() throws SQLException {
+        anggotaController = new AnggotaController();
 
-        setTitle("User Management");
+        setTitle("Anggota Management");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -49,9 +51,9 @@ public class UserView extends JFrame {
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    showUserForm(null);
+                    showAnggotaForm(null);
                 } catch (SQLException ex) {
-                    Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AnggotaView.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -61,13 +63,13 @@ public class UserView extends JFrame {
                 try {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
-                        int userId = (int) model.getValueAt(selectedRow, 0);
-                        showUserForm(userId);
+                        int anggotaId = (int) model.getValueAt(selectedRow, 0);
+                        showAnggotaForm(anggotaId);
                     } else {
-                        JOptionPane.showMessageDialog(UserView.this, "Pilih pengguna yang ingin diupdate.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(AnggotaView.this, "Pilih anggota yang ingin diupdate.", "Peringatan", JOptionPane.WARNING_MESSAGE);
                     }
                 } catch (SQLException ex) {
-                    Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AnggotaView.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -75,52 +77,59 @@ public class UserView extends JFrame {
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    deleteSelectedUser();
+                    deleteSelectedAnggota();
                 } catch (SQLException ex) {
-                    Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AnggotaView.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
 
         add(buttonPanel, BorderLayout.NORTH);
 
-        // Table untuk menampilkan data pengguna
+        // Table untuk menampilkan data anggota
         model = new DefaultTableModel();
         table = new JTable(model);
         model.addColumn("ID");
         model.addColumn("Nama");
         model.addColumn("Email");
+        model.addColumn("Alamat");
+        model.addColumn("Telepon");
+        model.addColumn("Tanggal Bergabung");
 
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Tampilkan data pengguna saat aplikasi dimulai
+        // Tampilkan data anggota saat aplikasi dimulai
         refreshTable();
     }
 
-    // Method untuk menampilkan data pengguna dalam tabel
+    // Method untuk menampilkan data anggota dalam tabel
     private void refreshTable() throws SQLException {
-        List<Admin> users = userController.getAllUsers();
+        List<Anggota> anggotaList = anggotaController.getAllAnggota();
         model.setRowCount(0); // Clear table
-        for (Admin user : users) {
-            model.addRow(new Object[]{user.getId(), user.getName(), user.getEmail()});
+        for (Anggota anggota : anggotaList) {
+            model.addRow(new Object[]{anggota.getId(), anggota.getNama(), anggota.getEmail(), anggota.getAlamat(), anggota.getTelepon(), anggota.getTanggalBergabung()});
         }
     }
 
-    // Method untuk menambahkan atau mengupdate pengguna
-    private void showUserForm(Integer userId) throws SQLException {
-        JDialog formDialog = new JDialog(this, userId == null ? "Tambah Pengguna" : "Update Pengguna", true);
+    // Method untuk menambahkan atau mengupdate anggota
+    private void showAnggotaForm(Integer anggotaId) throws SQLException {
+        JDialog formDialog = new JDialog(this, anggotaId == null ? "Tambah Anggota" : "Update Anggota", true);
         formDialog.setSize(400, 300);
-        formDialog.setLayout(new GridLayout(4, 2));
+        formDialog.setLayout(new GridLayout(6, 2));
 
         JLabel nameLabel = new JLabel("Nama:");
         JTextField nameField = new JTextField();
         JLabel emailLabel = new JLabel("Email:");
         JTextField emailField = new JTextField();
+        JLabel alamatLabel = new JLabel("Alamat:");
+        JTextField alamatField = new JTextField();
+        JLabel teleponLabel = new JLabel("Telepon:");
+        JTextField teleponField = new JTextField();
         JLabel passwordLabel = new JLabel("Password:");
         JPasswordField passwordField = new JPasswordField();
 
-        JButton saveButton = new JButton(userId == null ? "Tambah" : "Update");
+        JButton saveButton = new JButton(anggotaId == null ? "Tambah" : "Update");
         saveButton.setBackground(Color.GREEN);
         JButton cancelButton = new JButton("Batal");
         cancelButton.setBackground(Color.RED);
@@ -129,15 +138,21 @@ public class UserView extends JFrame {
         formDialog.add(nameField);
         formDialog.add(emailLabel);
         formDialog.add(emailField);
+        formDialog.add(alamatLabel);
+        formDialog.add(alamatField);
+        formDialog.add(teleponLabel);
+        formDialog.add(teleponField);
         formDialog.add(passwordLabel);
         formDialog.add(passwordField);
         formDialog.add(saveButton);
         formDialog.add(cancelButton);
 
-        if (userId != null) {
-            Admin user = userController.getUserById(userId);
-            nameField.setText(user.getName());
-            emailField.setText(user.getEmail());
+        if (anggotaId != null) {
+            Anggota anggota = anggotaController.getAnggotaById(anggotaId);
+            nameField.setText(anggota.getNama());
+            emailField.setText(anggota.getEmail());
+            alamatField.setText(anggota.getAlamat());
+            teleponField.setText(anggota.getTelepon());
         }
 
         saveButton.addActionListener(new ActionListener() {
@@ -145,13 +160,16 @@ public class UserView extends JFrame {
                 try {
                     String nama = nameField.getText();
                     String email = emailField.getText();
+                    String alamat = alamatField.getText();
+                    String telepon = teleponField.getText();
                     String password = new String(passwordField.getPassword());
 
                     if (nama != null && email != null && !nama.isEmpty() && !email.isEmpty()) {
-                        if (userId == null) {
-                            userController.createUser(nama, email, password);
+                        LocalDate now = LocalDate.now();
+                        if (anggotaId == null) {
+                            anggotaController.createAnggota(nama, email, alamat, telepon, password, Date.valueOf(now));
                         } else {
-                            userController.updateUser(userId, nama, email, password);
+                            anggotaController.updateAnggota(anggotaId, nama, email, alamat, telepon, password, Date.valueOf(now));
                         }
                         refreshTable();
                         formDialog.dispose();
@@ -159,7 +177,7 @@ public class UserView extends JFrame {
                         JOptionPane.showMessageDialog(formDialog, "Masukan semua data dengan benar", "Peringatan", JOptionPane.WARNING_MESSAGE);
                     }
                 } catch (SQLException ex) {
-                    Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AnggotaView.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -173,18 +191,18 @@ public class UserView extends JFrame {
         formDialog.setVisible(true);
     }
 
-    // Method untuk menghapus pengguna yang dipilih
-    private void deleteSelectedUser() throws SQLException {
+    // Method untuk menghapus anggota yang dipilih
+    private void deleteSelectedAnggota() throws SQLException {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
-            int userId = (int) model.getValueAt(selectedRow, 0);
-            int confirm = JOptionPane.showConfirmDialog(this, "Anda yakin ingin menghapus pengguna ini?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+            int anggotaId = (int) model.getValueAt(selectedRow, 0);
+            int confirm = JOptionPane.showConfirmDialog(this, "Anda yakin ingin menghapus anggota ini?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                userController.deleteUser(userId);
+                anggotaController.deleteAnggota(anggotaId);
                 refreshTable();
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Pilih pengguna yang ingin dihapus.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Pilih anggota yang ingin dihapus.", "Peringatan", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -192,9 +210,9 @@ public class UserView extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new UserView().setVisible(true);
+                    new AnggotaView().setVisible(true);
                 } catch (SQLException ex) {
-                    Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AnggotaView.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

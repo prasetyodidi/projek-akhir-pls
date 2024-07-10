@@ -9,9 +9,9 @@ public class Database {
     public static java.sql.Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             MysqlDataSource dataSource = new MysqlDataSource();
-            dataSource.setURL("jdbc:mysql://localhost:3307/projectakhir?zeroDateTimeBehavior=CONVERT_TO_NULL");
-            dataSource.setUser("root");
-            dataSource.setPassword("password");
+            dataSource.setURL("jdbc:mysql://localhost:3307/your_database_name?zeroDateTimeBehavior=CONVERT_TO_NULL");
+            dataSource.setUser("your_mysql_user");
+            dataSource.setPassword("your_mysql_password");
 
             connection = dataSource.getConnection();
         }

@@ -21,12 +21,9 @@ public class Admin {
         this.password = password;
     }
     
-    
-
     // Constructors
     public Admin() {}
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -50,4 +47,14 @@ public class Admin {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+ 
 }
