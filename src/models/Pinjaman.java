@@ -10,7 +10,7 @@ public class Pinjaman {
     private Date tanggalPinjam;
     private Date tanggalJatuhTempo;
     private String status;
-
+    
     public Pinjaman(int id, int idAnggota, BigDecimal jumlah, Date tanggalPinjam, Date tanggalJatuhTempo, String status) {
         this.id = id;
         this.idAnggota = idAnggota;

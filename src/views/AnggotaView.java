@@ -24,7 +24,7 @@ public class AnggotaView extends JFrame {
         anggotaController = new AnggotaController();
 
         setTitle("Anggota Management");
-        setSize(600, 400);
+        setSize(800, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -37,15 +37,19 @@ public class AnggotaView extends JFrame {
         JButton addButton = new JButton("Tambah");
         JButton updateButton = new JButton("Update");
         JButton deleteButton = new JButton("Hapus");
+        JButton backButton = new JButton("Kembali");
 
         // Set button colors to green
         addButton.setBackground(Color.GREEN);
         updateButton.setBackground(Color.GREEN);
-        deleteButton.setBackground(Color.GREEN);
+        deleteButton.setBackground(Color.RED);
+        backButton.setBackground(Color.BLUE);
+        backButton.setForeground(Color.WHITE);
 
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(backButton);
 
         // Tambah event listener untuk tombol tambah, update, dan hapus
         addButton.addActionListener(new ActionListener() {
@@ -84,10 +88,22 @@ public class AnggotaView extends JFrame {
             }
         });
 
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close current window
+                new AdminDashboardView().setVisible(true); // Show AdminDashboardView
+            }
+        });
+
         add(buttonPanel, BorderLayout.NORTH);
 
         // Table untuk menampilkan data anggota
-        model = new DefaultTableModel();
+        model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Membuat sel dalam tabel tidak bisa diedit secara langsung
+            }
+        };
         table = new JTable(model);
         model.addColumn("ID");
         model.addColumn("Nama");
@@ -95,6 +111,12 @@ public class AnggotaView extends JFrame {
         model.addColumn("Alamat");
         model.addColumn("Telepon");
         model.addColumn("Tanggal Bergabung");
+
+        // Mengatur style dan padding untuk tabel
+        table.setFillsViewportHeight(true);
+        table.setBackground(Color.WHITE);
+        table.setRowHeight(30);
+        table.setIntercellSpacing(new Dimension(10, 5)); // Padding antar sel
 
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
