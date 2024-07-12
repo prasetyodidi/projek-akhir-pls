@@ -1,6 +1,11 @@
 package views;
 
 import components.DatePicker;
+import controllers.PinjamanController;
+import controllers.AnggotaController;
+import models.Anggota;
+import models.Pinjaman;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -9,17 +14,13 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import controllers.PinjamanController;
-import controllers.AnggotaController;
-import models.Anggota;
-import models.Pinjaman;
-import java.math.BigDecimal;
-import java.sql.Date;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class PinjamanView extends JFrame {
@@ -34,30 +35,33 @@ public class PinjamanView extends JFrame {
         anggotaController = new AnggotaController();
 
         setTitle("Pinjaman Management");
-        setSize(800, 600); // Perbesar ukuran window
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        getContentPane().setBackground(Color.WHITE); // Set background color to white
 
-        // Set background color to white for the content pane
-        getContentPane().setBackground(Color.WHITE);
-
-        // Panel untuk tombol tambah, update, dan hapus
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Set alignment to left
+        // Panel untuk tombol tambah, update, hapus, dan kembali
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         buttonPanel.setBackground(Color.WHITE); // Set button panel background to white
+
         JButton addButton = new JButton("Tambah");
         JButton updateButton = new JButton("Update");
         JButton deleteButton = new JButton("Hapus");
+        JButton backButton = new JButton("Kembali");
 
-        // Set button colors to green
-        addButton.setBackground(Color.GREEN);
-        updateButton.setBackground(Color.GREEN);
-        deleteButton.setBackground(Color.GREEN);
+        // Set button colors
+        addButton.setBackground(new Color(60, 179, 113)); // SeaGreen
+        updateButton.setBackground(new Color(30, 144, 255)); // DodgerBlue
+        deleteButton.setBackground(new Color(255, 69, 0)); // OrangeRed
+        backButton.setBackground(new Color(70, 130, 180)); // SteelBlue
+        backButton.setForeground(Color.WHITE);
 
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(backButton);
 
-        // Tambah event listener untuk tombol tambah, update, dan hapus
+        // Tambah event listener untuk tombol tambah, update, hapus, dan kembali
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -94,12 +98,19 @@ public class PinjamanView extends JFrame {
             }
         });
 
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close current window
+                new AdminDashboardView().setVisible(true); // Show AdminDashboardView
+            }
+        });
+
         add(buttonPanel, BorderLayout.NORTH);
 
         // Panel untuk menampilkan data pinjaman dengan padding
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.setBackground(Color.WHITE);
-        tablePanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Set padding/margin
+        tablePanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Set padding
 
         // Table untuk menampilkan data pinjaman
         model = new DefaultTableModel();
@@ -115,7 +126,7 @@ public class PinjamanView extends JFrame {
                 return component;
             }
         };
-        
+
         // Set header style
         JTableHeader header = table.getTableHeader();
         header.setBackground(new Color(100, 149, 237)); // Cornflower blue
@@ -191,9 +202,9 @@ public class PinjamanView extends JFrame {
         JComboBox<String> statusComboBox = new JComboBox<>(new String[]{"belum_lunas", "lunas"});
 
         JButton saveButton = new JButton(pinjamanId == null ? "Tambah" : "Update");
-        saveButton.setBackground(Color.GREEN);
+        saveButton.setBackground(new Color(60, 179, 113)); // SeaGreen
         JButton cancelButton = new JButton("Batal");
-        cancelButton.setBackground(Color.RED);
+        cancelButton.setBackground(new Color(255, 69, 0)); // OrangeRed
 
         formDialog.add(idAnggotaLabel);
         formDialog.add(idAnggotaComboBox);

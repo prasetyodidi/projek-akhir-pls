@@ -10,49 +10,45 @@ public class AdminLoginView extends JFrame implements ActionListener {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
-    private JCheckBox rememberMeCheckBox;
-    private JLabel forgotPasswordLabel;
 
     public AdminLoginView() {
         super("Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
-        setLayout(new GridLayout(6, 1, 10, 10));
+        setLayout(new BorderLayout());
         setLocationRelativeTo(null);
 
+        // Create a panel with padding
+        JPanel paddedPanel = new JPanel();
+        paddedPanel.setLayout(new GridLayout(6, 1, 10, 10));
+        paddedPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding: top, left, bottom, right
+
         // Title
-        titleLabel = new JLabel("Nice to see you again", SwingConstants.CENTER);
+        titleLabel = new JLabel("Login", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        add(titleLabel);
+        paddedPanel.add(titleLabel);
 
         // Email field
         emailLabel = new JLabel("Email or phone number");
-        add(emailLabel);
+        paddedPanel.add(emailLabel);
         emailField = new JTextField();
-        add(emailField);
+        paddedPanel.add(emailField);
 
         // Password field
         passwordLabel = new JLabel("Password");
-        add(passwordLabel);
+        paddedPanel.add(passwordLabel);
         passwordField = new JPasswordField();
-        add(passwordField);
-
-        // Remember me checkbox
-        rememberMeCheckBox = new JCheckBox("Remember me");
-        add(rememberMeCheckBox);
-
-        // Forgot password link
-        forgotPasswordLabel = new JLabel("<html><a href='#'>Forgot password?</a></html>");
-        forgotPasswordLabel.setForeground(Color.BLUE);
-        forgotPasswordLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        add(forgotPasswordLabel);
+        paddedPanel.add(passwordField);
 
         // Login button
         loginButton = new JButton("Sign in");
         loginButton.setBackground(new Color(0, 153, 255));
         loginButton.setForeground(Color.WHITE);
         loginButton.addActionListener(this);
-        add(loginButton);
+        paddedPanel.add(loginButton);
+
+        // Add padded panel to the frame
+        add(paddedPanel, BorderLayout.CENTER);
 
         setVisible(true);
     }
@@ -64,14 +60,17 @@ public class AdminLoginView extends JFrame implements ActionListener {
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
 
-            // Misalnya, validasi login sederhana (diganti dengan yang sesuai dengan kebutuhan Anda)
+            // Simple login validation (replace with actual validation logic)
             if (email.equals("didi") && password.equals("123")) {
-                AdminDashboardView dashboard = new AdminDashboardView();
-                dashboard.setVisible(true);
-                dispose(); // Tutup halaman login setelah berhasil login
+                // Proceed to the next view, for example, AdminDashboardView
+                 AdminDashboardView dashboard = new AdminDashboardView();
+                 dashboard.setVisible(true);
+                 dispose(); // Close login window after successful login
+                // Placeholder for successful login action
+                JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // Jika login gagal, tampilkan pesan kesalahan
-                JOptionPane.showMessageDialog(this, "Email atau password salah", "Login Failed", JOptionPane.ERROR_MESSAGE);
+                // Show error message on failed login
+                JOptionPane.showMessageDialog(this, "Email or password incorrect", "Login Failed", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

@@ -5,8 +5,11 @@ import repositories.AnggotaRepository;
 
 import java.sql.SQLException;
 import java.util.List;
+import models.Simpanan;
+import models.Pinjaman;
 
 public class AnggotaService {
+
     private AnggotaRepository anggotaRepository;
 
     public AnggotaService() {
@@ -23,6 +26,14 @@ public class AnggotaService {
 
     public List<Anggota> getAllAnggota() throws SQLException {
         return anggotaRepository.getAllAnggota();
+    }
+
+    public List<Simpanan> getSimpananHistory(int id) throws SQLException {
+        return anggotaRepository.getSimpananHistory(id);
+    }
+
+    public List<Pinjaman> getPinjamanHistory(int id) throws SQLException {
+        return anggotaRepository.getPinjamanHistory(id);
     }
 
     public void updateAnggota(Anggota anggota) throws SQLException {

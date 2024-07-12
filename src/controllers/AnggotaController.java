@@ -5,8 +5,11 @@ import services.AnggotaService;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.util.List;
+import models.Simpanan;
+import models.Pinjaman;
 
 public class AnggotaController {
+
     private AnggotaService anggotaService;
 
     public AnggotaController() {
@@ -38,5 +41,13 @@ public class AnggotaController {
         } catch (SQLException e) {
             return "Gagal menghapus anggota: " + e.getMessage();
         }
+    }
+
+    public List<Simpanan> getSimpananHistory(int id) throws SQLException {
+        return anggotaService.getSimpananHistory(id);
+    }
+
+    public List<Pinjaman> getPinjamanHistory(int anggotaId) throws SQLException {
+        return anggotaService.getPinjamanHistory(anggotaId);
     }
 }

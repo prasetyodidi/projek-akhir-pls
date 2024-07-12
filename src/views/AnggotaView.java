@@ -27,6 +27,7 @@ public class AnggotaView extends JFrame {
         setSize(800, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        getContentPane().setBackground(Color.WHITE); // Set background color to white
 
         // Set background color to white
         getContentPane().setBackground(Color.WHITE);
@@ -38,6 +39,7 @@ public class AnggotaView extends JFrame {
         JButton updateButton = new JButton("Update");
         JButton deleteButton = new JButton("Hapus");
         JButton backButton = new JButton("Kembali");
+        JButton historyButton = new JButton("History");
 
         // Set button colors to green
         addButton.setBackground(Color.GREEN);
@@ -45,11 +47,13 @@ public class AnggotaView extends JFrame {
         deleteButton.setBackground(Color.RED);
         backButton.setBackground(Color.BLUE);
         backButton.setForeground(Color.WHITE);
+        historyButton.setBackground(Color.YELLOW);
 
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(backButton);
+        buttonPanel.add(historyButton);
 
         // Tambah event listener untuk tombol tambah, update, dan hapus
         addButton.addActionListener(new ActionListener() {
@@ -74,6 +78,24 @@ public class AnggotaView extends JFrame {
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(AnggotaView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+
+        historyButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    int anggotaId = (int) model.getValueAt(selectedRow, 0);
+                    try {
+                        AnggotaHistoryView historyView = new AnggotaHistoryView(anggotaId);
+                        historyView.setVisible(true);
+                        dispose();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AnggotaView.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(AnggotaView.this, "Pilih anggota yang ingin diupdate.", "Peringatan", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -119,6 +141,7 @@ public class AnggotaView extends JFrame {
         table.setIntercellSpacing(new Dimension(10, 5)); // Padding antar sel
 
         JScrollPane scrollPane = new JScrollPane(table);
+        
         add(scrollPane, BorderLayout.CENTER);
 
         // Tampilkan data anggota saat aplikasi dimulai

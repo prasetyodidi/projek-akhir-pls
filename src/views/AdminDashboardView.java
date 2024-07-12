@@ -19,6 +19,7 @@ public class AdminDashboardView extends JFrame {
         // Create panel for buttons
         JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        getContentPane().setBackground(Color.WHITE); // Set background color to white
 
         // Create buttons for each menu item
         JButton anggotaButton = new JButton("Anggota");

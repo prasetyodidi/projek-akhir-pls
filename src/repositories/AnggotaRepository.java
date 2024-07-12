@@ -5,6 +5,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import database.Database;
+import models.Simpanan;
+import models.Pinjaman;
+
 
 public class AnggotaRepository {
 
@@ -81,5 +84,45 @@ public class AnggotaRepository {
             statement.setInt(1, id);
             statement.executeUpdate();
         }
+    }
+    
+    public List<Simpanan> getSimpananHistory(int id) throws SQLException {
+        List<Simpanan> simpananList = new ArrayList<>();
+        String query = "SELECT * FROM simpanan WHERE id_anggota = ?";
+        try (PreparedStatement statement = Database.getConnection().prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Simpanan simpanan = new Simpanan(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("id_anggota"),
+                        resultSet.getBigDecimal("jumlah"),
+                        resultSet.getDate("tanggal_simpan")
+                );
+                simpananList.add(simpanan);
+            }
+        }
+        return simpananList;
+    }
+
+    public List<Pinjaman> getPinjamanHistory(int id) throws SQLException {
+        List<Pinjaman> pinjamanList = new ArrayList<>();
+        String query = "SELECT * FROM pinjaman WHERE id_anggota = ?";
+        try (PreparedStatement statement = Database.getConnection().prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Pinjaman pinjaman = new Pinjaman(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("id_anggota"),
+                        resultSet.getBigDecimal("jumlah"),
+                        resultSet.getDate("tanggal_pinjam"),
+                        resultSet.getDate("tanggal_jatuh_tempo"),
+                        resultSet.getString("status")
+                );
+                pinjamanList.add(pinjaman);
+            }
+        }
+        return pinjamanList;
     }
 }
